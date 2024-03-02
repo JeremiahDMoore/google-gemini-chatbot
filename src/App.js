@@ -1,5 +1,7 @@
 
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+
 
 const App = () => {
   const [value, setValue] = useState("");
@@ -85,7 +87,12 @@ const App = () => {
     setError("");
     setChatHistory([]);
   }
-
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent the form from being submitted
+      getReponse();
+    }
+  }
   return (
     <div className="app">
         <p>What do you want to know?
@@ -95,15 +102,24 @@ const App = () => {
           <input 
             value={value}
             placeholder="Type your question here"
-            onChange={(e) => setValue(e.target.value)} />
+            onChange={(e) => setValue(e.target.value)} 
+            onKeyDown={handleKeyDown} />
+
           {!error && <button onClick={getReponse}>Ask Me</button>}
           {error && <button onClick={clear}>Clear</button>}
         </div>
         {error && <p>{error}</p>}
         <div className="search-result">
           {chatHistory.map((chatItem, _index) => <div key={_index}>
-            <p className="answer"><span style={{ color: '#00ffa2', fontWeight: 600 }}>{chatItem.role.charAt(0).toUpperCase() + chatItem.role.slice(1)} :</span> {chatItem.parts}</p>
+            <p className="answer">
+              <span style={{ color: '#00ffa2', fontWeight: 600 }}>
+                {chatItem.role.charAt(0).toUpperCase() + chatItem.role.slice(1)} :
+                </span>
+                              {/* Render markdown content here */}
+              <ReactMarkdown>{chatItem.parts}</ReactMarkdown>
+                </p>
           </div>)}
+          
         </div>
 
     </div>
